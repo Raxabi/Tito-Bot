@@ -1,0 +1,4 @@
+# Excluded files
+.env
+discord-bot
+src/__pycache__
