@@ -1,8 +1,8 @@
-import os
+from os import environ
 from dotenv import load_dotenv
-from src import bot
+from src.bot import client
+
 load_dotenv(".env")
+token_var_env = environ.get("token")
 
-token_var_env = os.environ.get("token")
-
-bot.client.run(token_var_env)
+client.run(token = token_var_env)
