@@ -1,38 +1,43 @@
-import discord as ds
+#* Timer
+import logging
+import datetime
+import asyncio
+from time import sleep
 
-client = ds.Client()
+#* Discord
+import discord
+from discord import Message
 
-@client.event
-async def on_connect():
-    print("Tito franco conectado, ARRIBA!")
+intents = discord.Intents.default()
+intents.message_content = True
+client = discord.Client(intents = intents)
 
 @client.event
 async def on_ready():
-    print("Nos hemos logueado como {0.user}".format(client))
+    print(f"Sesion iniciada como {client.user}")
+
+message_count: list[str] = []
+timer = 24 * 3600
+
 
 @client.event
-async def on_message(message):
+async def on_message(message: Message):
+
     if message.author == client.user:
         return
-    
-    if message.content.startswith("$españa"):
-        await message.channel.send("ARRIBA!")
-    
-    if message.content.startswith("$los moros?"):
-        await message.channel.send("FUERA!")
-    
-    if message.content.startswith("$los sudacas?"):
-        await message.channel.send("FUERA!\nFUERA QUIEN SE SALGA DE LA FRONTERAS DE MI BANDERA")
 
-    if message.content.startswith("$cara a donde?"):
-        await message.channel.send("""Cara al sol con la camisa nueva
-            Que tú bordaste en rojo ayer,
-            Me hallará la muerte si me lleva
-            Y no te vuelvo a ver.""")
-    
-    if message.content.startswith("$cuanto es 1 + 1?"):
-        await message.channel.send("estas fusilado")
+    if message.channel.id == 1017483825678397471:
+        message_count.append(message.content)
+        print(message_count)
 
-@client.event
-async def on_disconnect():
-    print("Hasta pronto, cuiden España por mi")
+    if len(message_count) == 5:
+        await message.channel.send("Prohibido mandar mas mensajes. PARA AHORA MISMO O SERAS FUSILADO!")
+        global timer
+        while timer != 0:
+            timer = timer - 1
+            await asyncio.sleep(1)
+            print(timer, end="\r")
+    
+    if len(message_count) > 5:
+        await message.channel.send(f"Aun quedan {datetime.timedelta(hours = timer / 3600)} horas para que el sol vuelva a salir por ESPAÑA")
+        await message.delete(delay=1/100000)
