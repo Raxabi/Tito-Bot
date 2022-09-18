@@ -37,7 +37,9 @@ async def on_message(message: Message):
             timer = timer - 1
             await asyncio.sleep(1)
             print(timer, end="\r")
-    
+        if timer == 0:
+            timer = 24 * 3600
+            message_count.clear()
     if len(message_count) > 5:
         await message.channel.send(f"Aun quedan {datetime.timedelta(hours = timer / 3600)} horas para que el sol vuelva a salir por ESPAÑA")
         await message.delete(delay=1/100000)
